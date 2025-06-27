@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fun Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>Fun Quiz 🎉</h2>
+    <div id="quiz">
+      <div class="question" id="question">Loading question...</div>
+      <div id="answer-buttons"></div>
+      <button id="next-btn">Next</button>
+    </div>
+    <div id="score" style="display: none;"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Which planet is known as the Red Planet?",
+        answers: [
+          { text: "Mars", correct: true },
+          { text: "Venus", correct: false },
+          { text: "Jupiter", correct: false },
+          { text: "Saturn", correct: false }
+        ]
+      },
+      {
+        question: "What is the capital of France?",
+        answers: [
+          { text: "Rome", correct: false },
+          { text: "Madrid", correct: false },
+          { text: "Paris", correct: true },
+          { text: "Berlin", correct: false }
+        ]
+      },
+      {
+        question: "Which animal is known as the King of the Jungle?",
+        answers: [
+          { text: "Elephant", correct: false },
+          { text: "Lion", correct: true },
+          { text: "Tiger", correct: false },
+          { text: "Bear", correct: false }
+        ]
+      },
+      {
+        question: "What is the largest ocean on Earth?",
+        answers: [
+          { text: "Atlantic Ocean", correct: false },
+          { text: "Indian Ocean", correct: false },
+          { text: "Pacific Ocean", correct: true },
+          { text: "Arctic Ocean", correct: false }
+        ]
+      },
+      {
+        question: "Which language is primarily spoken in Brazil?",
+        answers: [
+          { text: "Spanish", correct: false },
+          { text: "Portuguese", correct: true },
+          { text: "English", correct: false },
+          { text: "French", correct: false }
+        ]
+      },
+      {
+        question: "How many continents are there?",
+        answers: [
+          { text: "5", correct: false },
+          { text: "6", correct: false },
+          { text: "7", correct: true },
+          { text: "8", correct: false }
+        ]
+      },
+      {
+        question: "Which gas do plants absorb from the atmosphere?",
+        answers: [
+          { text: "Oxygen", correct: false },
+          { text: "Carbon Dioxide", correct: true },
+          { text: "Hydrogen", correct: false },
+          { text: "Nitrogen", correct: false }
+        ]
+      },
+      {
+        question: "What is the square root of 64?",
+        answers: [
+          { text: "6", correct: false },
+          { text: "8", correct: true },
+          { text: "7", correct: false },
+          { text: "9", correct: false }
+        ]
+      },
+      {
+        question: "Which country is famous for the pyramids?",
+        answers: [
+          { text: "Greece", correct: false },
+          { text: "Mexico", correct: false },
+          { text: "Egypt", correct: true },
+          { text: "India", correct: false }
+        ]
+      },
+      {
+        question: "Which instrument has keys, pedals, and strings?",
+        answers: [
+          { text: "Guitar", correct: false },
+          { text: "Drums", correct: false },
+          { text: "Piano", correct: true },
+          { text: "Violin", correct: false }
+        ]
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const scoreContainer = document.getElementById("score");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      scoreContainer.style.display = "none";
+      nextButton.innerText = "Next";
+      showQuestion();
+    }
+
+    function showQuestion() {
+      resetState();
+      let currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("answer-btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.style.display = "none";
+      while (answerButtons.firstChild) {
+        answerButtons.removeChild(answerButtons.firstChild);
+      }
+    }
+
+    function selectAnswer(e) {
+      const selectedBtn = e.target;
+      const isCorrect = selectedBtn.dataset.correct === "true";
+      if (isCorrect) {
+        selectedBtn.style.backgroundColor = "#34d399";
+        score++;
+      } else {
+        selectedBtn.style.backgroundColor = "#f87171";
+      }
+
+      Array.from(answerButtons.children).forEach(button => {
+        button.disabled = true;
+        if (button.dataset.correct === "true") {
+          button.style.backgroundColor = "#34d399";
+        }
+      });
+
+      nextButton.style.display = "inline-block";
+    }
+
+    function showScore() {
+      resetState();
+      questionElement.innerText = "Quiz Completed!";
+      scoreContainer.innerText = `🎉 You scored ${score} out of ${questions.length}`;
+      scoreContainer.style.display = "block";
+      nextButton.innerText = "Play Again";
+      nextButton.style.display = "inline-block";
+    }
+
+    function handleNextButton() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    nextButton.addEventListener("click", () => {
+      if (currentQuestionIndex < questions.length) {
+        handleNextButton();
+      } else {
+        startQuiz();
+      }
+    });
+
+    startQuiz();
+  </script>
+</body>
+</html>
